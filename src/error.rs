@@ -67,7 +67,7 @@ impl Error for ConnectingFailed {
         "connecting with server failed"
     }
 
-    fn cause(&self) -> Option<&Error> {
+    fn cause(&self) -> Option<&dyn Error> {
         use self::ConnectingFailed::*;
         match *self {
             Io(ref err) => Some(err),
@@ -119,7 +119,7 @@ pub enum LogicError {
     /// This is meant to be produced by a custom command, as the sender of the command knows
     /// (at some abstraction level) which command it send, it can downcast and handle the
     /// error
-    Custom(Box<Error + 'static + Send + Sync>),
+    Custom(Box<dyn Error + 'static + Send + Sync>),
 
     /// command can not be used, as the server does not promotes the necessary capabilities
     MissingCapabilities(MissingCapabilities),
@@ -132,20 +132,10 @@ impl From<MissingCapabilities> for LogicError {
 }
 
 impl Error for LogicError {
-    fn description(&self) -> &str {
+    fn source(&self) -> Option<&(dyn Error + 'static)> {
         use self::LogicError::*;
         match *self {
-            Code(_) => "server responded with error response code",
-            UnexpectedCode(_) => "server responded with unexpected non-error response code",
-            MissingCapabilities(ref err) => err.description(),
-            Custom(ref boxed) => boxed.description(),
-        }
-    }
-
-    fn cause(&self) -> Option<&Error> {
-        use self::LogicError::*;
-        match *self {
-            Custom(ref boxed) => boxed.cause(),
+            Custom(ref boxed) => boxed.source(),
             _ => None,
         }
     }
@@ -154,11 +144,14 @@ impl Error for LogicError {
 impl Display for LogicError {
     fn fmt(&self, fter: &mut fmt::Formatter) -> fmt::Result {
         use self::LogicError::*;
-
         match *self {
-            Custom(ref boxed) => Display::fmt(boxed, fter),
-            //FIXME better display impl
-            _ => Debug::fmt(self, fter),
+            Code(_) => write!(fter, "server responded with error response code"),
+            UnexpectedCode(_) => write!(
+                fter,
+                "server responded with unexpected non-error response code"
+            ),
+            MissingCapabilities(ref err) => write!(fter, "{}", err),
+            Custom(ref boxed) => write!(fter, "{}", boxed),
         }
     }
 }

@@ -631,7 +631,7 @@ mod test {
     use futures::sync::oneshot;
     use futures::{future, Future};
 
-    fn time_out(secs: u64) -> Box<Future<Item = (), Error = ()>> {
+    fn time_out(secs: u64) -> Box<dyn Future<Item = (), Error = ()>> {
         let (tx, rx) = oneshot::channel();
         thread::spawn(move || {
             thread::sleep(Duration::new(secs, 0));

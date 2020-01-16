@@ -312,22 +312,22 @@ pub enum SyntaxError {
 
 impl Display for SyntaxError {
     fn fmt(&self, fter: &mut fmt::Formatter) -> fmt::Result {
-        write!(fter, "{}", self.description())
+        use self::SyntaxError::*;
+        write!(
+            fter,
+            "{}",
+            match *self {
+                Domain => "syntax error parsing Domain from str",
+                Param => "syntax error parsing Param str",
+                EsmtpKeyword => "syntax error parsing esmtp-keyword from str",
+                EsmtpValue => "syntax error parsing esmtp-value from str",
+                AddressLiteral => "syntax error parsing address-literal from str",
+            }
+        )
     }
 }
 
-impl Error for SyntaxError {
-    fn description(&self) -> &str {
-        use self::SyntaxError::*;
-        match *self {
-            Domain => "syntax error parsing Domain from str",
-            Param => "syntax error parsing Param str",
-            EsmtpKeyword => "syntax error parsing esmtp-keyword from str",
-            EsmtpValue => "syntax error parsing esmtp-value from str",
-            AddressLiteral => "syntax error parsing address-literal from str",
-        }
-    }
-}
+impl Error for SyntaxError {}
 
 impl AddressLiteral {
     /// Create a "general" AddressLiteral which is not IPv4/v6

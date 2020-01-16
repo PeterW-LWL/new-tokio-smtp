@@ -330,7 +330,7 @@ pub type MailSendResult = Result<(), (usize, LogicError)>;
 
 /// Future returned by `send_mail`
 pub type MailSendFuture =
-    Box<Future<Item = (Connection, MailSendResult), Error = std_io::Error> + Send>;
+    Box<dyn Future<Item = (Connection, MailSendResult), Error = std_io::Error> + Send>;
 
 /// Sends a mail specified through `MailEnvelop` through the connection `con`.
 ///
@@ -506,7 +506,8 @@ pub struct SendAllMails<I> {
     mails: I,
     con: Option<Connection>,
     //FIXME[rust/impl Trait in struct]
-    pending: Option<Box<Future<Item = (Connection, MailSendResult), Error = std_io::Error> + Send>>,
+    pending:
+        Option<Box<dyn Future<Item = (Connection, MailSendResult), Error = std_io::Error> + Send>>,
 }
 
 impl<I, E> SendAllMails<I>

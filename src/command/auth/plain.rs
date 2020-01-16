@@ -121,16 +121,8 @@ pub struct NullCodePointError;
 
 impl Display for NullCodePointError {
     fn fmt(&self, fter: &mut fmt::Formatter) -> fmt::Result {
-        fter.write_str(self.description())
+        fter.write_str("input (username/password) contained null byte")
     }
 }
 
-impl ErrorTrait for NullCodePointError {
-    fn description(&self) -> &str {
-        "input (username/password) contained null byte"
-    }
-
-    fn cause(&self) -> Option<&ErrorTrait> {
-        None
-    }
-}
+impl ErrorTrait for NullCodePointError {}

@@ -8,7 +8,8 @@ use error::{LogicError, MissingCapabilities};
 use io::{Io, SmtpResult, Socket};
 
 /// future returned by `Cmd::exec`
-pub type ExecFuture = Box<Future<Item = (Io, SmtpResult), Error = std_io::Error> + Send + 'static>;
+pub type ExecFuture =
+    Box<dyn Future<Item = (Io, SmtpResult), Error = std_io::Error> + Send + 'static>;
 
 /// The basic `Connection` type representing an (likely) open smtp connection
 ///
@@ -238,7 +239,7 @@ pub trait Cmd: Send + 'static {
 }
 
 /// A type acting like a `Cmd` trait object
-pub type BoxedCmd = Box<TypeErasableCmd + Send>;
+pub type BoxedCmd = Box<dyn TypeErasableCmd + Send>;
 
 /// A alternate version of `Cmd` which is object safe
 /// but has methods which can panic if misused.

@@ -137,7 +137,7 @@ pub enum OnError {
 
 impl HandleErrorInChain for OnError {
     //FIXME[rust/impl Trait for associated type]: use impl Trait/abstract type
-    type Fut = Box<Future<Item = (Connection, bool), Error = std_io::Error> + Send>;
+    type Fut = Box<dyn Future<Item = (Connection, bool), Error = std_io::Error> + Send>;
     //type Fut = impl Future<Item=(Connection, bool), Error=std_io::Error> + Send;
 
     fn handle_error(&self, con: Connection, _msg_idx: usize, _error: &LogicError) -> Self::Fut {

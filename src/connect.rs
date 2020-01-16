@@ -15,7 +15,7 @@ use command::Noop;
 
 /// A future resolving to an `Connection` instance
 pub type ConnectingFuture =
-    Box<Future<Item = Connection, Error = ConnectingFailed> + Send + 'static>;
+    Box<dyn Future<Item = Connection, Error = ConnectingFailed> + Send + 'static>;
 
 pub const DEFAULT_SMTP_MSA_PORT: u16 = 587;
 pub const DEFAULT_SMTP_MX_PORT: u16 = 25;
