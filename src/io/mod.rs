@@ -7,9 +7,9 @@ use tokio::net::TcpStream;
 use tokio_tls::TlsStream;
 
 use super::ExecFuture;
-use common::EhloData;
-use error::LogicError;
-use response::Response;
+use crate::common::EhloData;
+use crate::error::LogicError;
+use crate::response::Response;
 
 mod socket;
 pub use self::socket::*;

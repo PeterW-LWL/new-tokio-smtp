@@ -95,13 +95,13 @@ use futures::stream::Stream;
 use futures::{Async, IntoFuture, Poll};
 use vec1::Vec1;
 
-use chain::{chain, HandleErrorInChain, OnError};
-use command::{self, params_with_smtputf8};
-use common::SetupTls;
-use connect::ConnectionConfig;
-use data_types::{ForwardPath, ReversePath};
-use error::{GeneralError, LogicError, MissingCapabilities};
-use {Cmd, Connection};
+use crate::chain::{chain, HandleErrorInChain, OnError};
+use crate::command::{self, params_with_smtputf8};
+use crate::common::SetupTls;
+use crate::connect::ConnectionConfig;
+use crate::data_types::{ForwardPath, ReversePath};
+use crate::error::{GeneralError, LogicError, MissingCapabilities};
+use crate::{Cmd, Connection};
 
 /// Specifies if the mail requires SMTPUTF8 (or Mime8bit)
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
@@ -744,9 +744,9 @@ where
 
 #[cfg(test)]
 mod test {
-    use error::GeneralError;
-    use send_mail::MailEnvelop;
-    use {command, Connection, ConnectionConfig};
+    use crate::error::GeneralError;
+    use crate::send_mail::MailEnvelop;
+    use crate::{command, Connection, ConnectionConfig};
 
     fn assert_send(_: &impl Send) {}
 

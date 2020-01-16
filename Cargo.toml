@@ -8,11 +8,12 @@ categories = ["network-programming"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/1aim/new-tokio-smtp"
 version = "0.8.1"
-readme="./README.md"
+readme = "./README.md"
+edition = "2018"
 
 [features]
-default = ['send-mail']
-send-mail = ['vec1']
+default = ["send-mail"]
+send-mail = ["vec1"]
 mock-support = []
 mock-impl = ["mock-support", "rand"]
 

@@ -6,8 +6,8 @@ use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
 use hostname::get_hostname;
 use native_tls::{self, TlsConnector as NativeTlsConnector, TlsConnectorBuilder};
 
-use ascii::IgnoreAsciiCaseStr;
-use data_types::{AddressLiteral, Capability, Domain, EhloParam};
+use crate::ascii::IgnoreAsciiCaseStr;
+use crate::data_types::{AddressLiteral, Capability, Domain, EhloParam};
 
 /// Represents the identity of an client
 ///

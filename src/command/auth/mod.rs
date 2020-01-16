@@ -1,5 +1,5 @@
-use error::MissingCapabilities;
-use {Capability, EhloData, EsmtpKeyword};
+use crate::error::MissingCapabilities;
+use crate::{Capability, EhloData, EsmtpKeyword};
 
 mod login;
 pub use self::login::*;

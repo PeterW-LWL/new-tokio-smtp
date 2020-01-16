@@ -3,9 +3,9 @@ use std::io as std_io;
 use futures::future::{self, Either, Future};
 use tokio::io::{shutdown, Shutdown};
 
-use common::EhloData;
-use error::{LogicError, MissingCapabilities};
-use io::{Io, SmtpResult, Socket};
+use crate::common::EhloData;
+use crate::error::{LogicError, MissingCapabilities};
+use crate::io::{Io, SmtpResult, Socket};
 
 /// future returned by `Cmd::exec`
 pub type ExecFuture =
@@ -166,7 +166,7 @@ impl Connection {
     pub fn quit(self) -> impl Future<Item = Socket, Error = std_io::Error> {
         //Note: this has a circular dependency between Connection <-> cmd StartTls/Ehlo which
         // could be resolved using a ext. trait, but it's more ergonomic this way
-        use command::Quit;
+        use crate::command::Quit;
 
         self.send(Quit).and_then(|(con, _res)| con.shutdown())
     }

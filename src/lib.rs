@@ -25,19 +25,11 @@
 //! Extend the `Socket` abstraction to include a mock socket additional to `Tcp`, `TcpTls`.
 //! Also provides a mock socket implementation for simply testing commands. Custom implementations
 //! can be provided too if needed for testing
+#![warn(rust_2018_idioms)]
 
 #[macro_use]
 extern crate futures;
-extern crate base64;
-extern crate bytes;
-extern crate hostname;
-extern crate native_tls;
-#[cfg(feature = "mock-impl")]
-extern crate rand;
-extern crate tokio;
-extern crate tokio_tls;
-#[cfg(feature = "send-mail")]
-extern crate vec1;
+
 // order of modules is also "order" in dependency-tree
 // i.e. module should only import from modules hither
 // up in the list

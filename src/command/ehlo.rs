@@ -4,8 +4,8 @@ use std::io as std_io;
 use bytes::BufMut;
 use futures::Future;
 
-use error::MissingCapabilities;
-use {ClientId, Cmd, Domain, EhloData, EhloParam, ExecFuture, Io, Response, SyntaxError};
+use crate::error::MissingCapabilities;
+use crate::{ClientId, Cmd, Domain, EhloData, EhloParam, ExecFuture, Io, Response, SyntaxError};
 
 #[derive(Debug, Clone)]
 pub struct Ehlo {
@@ -97,8 +97,8 @@ mod test {
 
     mod parse_ehlo_response {
         use super::super::parse_ehlo_response;
-        use response::codes::OK;
-        use Response;
+        use crate::response::codes::OK;
+        use crate::Response;
 
         #[test]
         fn simple_case() {

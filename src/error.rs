@@ -1,6 +1,6 @@
 //! error module
-use data_types::{Capability, EsmtpKeyword};
-use response::Response;
+use crate::data_types::{Capability, EsmtpKeyword};
+use crate::response::Response;
 use std::error::Error;
 use std::fmt::{self, Debug, Display};
 use std::io as std_io;
@@ -13,7 +13,7 @@ pub enum GeneralError {
 }
 
 impl Display for GeneralError {
-    fn fmt(&self, fter: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, fter: &mut fmt::Formatter<'_>) -> fmt::Result {
         use self::GeneralError::*;
         match *self {
             Connecting(ref err) => write!(fter, "Connecting failed: {}", err),
@@ -78,7 +78,7 @@ impl Error for ConnectingFailed {
 }
 
 impl Display for ConnectingFailed {
-    fn fmt(&self, fter: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, fter: &mut fmt::Formatter<'_>) -> fmt::Result {
         use self::ConnectingFailed::*;
         match *self {
             Io(ref err) => write!(fter, "I/O-Error: {}", err),
@@ -142,7 +142,7 @@ impl Error for LogicError {
 }
 
 impl Display for LogicError {
-    fn fmt(&self, fter: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, fter: &mut fmt::Formatter<'_>) -> fmt::Result {
         use self::LogicError::*;
         match *self {
             Code(_) => write!(fter, "server responded with error response code"),
@@ -204,7 +204,7 @@ impl Error for MissingCapabilities {
 }
 
 impl Display for MissingCapabilities {
-    fn fmt(&self, fter: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, fter: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(fter, "missing capabilities:")?;
         let mut first = true;
         for cap in self.capabilities.iter() {

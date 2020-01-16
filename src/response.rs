@@ -97,7 +97,7 @@ pub mod parser {
     }
 
     impl Display for ParseError {
-        fn fmt(&self, fter: &mut fmt::Formatter) -> fmt::Result {
+        fn fmt(&self, fter: &mut fmt::Formatter<'_>) -> fmt::Result {
             write!(fter, "{:?}", self)
         }
     }

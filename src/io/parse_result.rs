@@ -5,8 +5,8 @@ use bytes::BufMut;
 use futures::{Async, Future, Poll};
 use tokio::io::AsyncRead;
 
-use error::check_response;
-use response::parser;
+use crate::error::check_response;
+use crate::response::parser;
 
 use super::{Io, SmtpResult, INPUT_BUFFER_INC_SIZE};
 
