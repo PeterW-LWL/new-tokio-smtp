@@ -58,7 +58,7 @@ fn connection_already_secure_error_future() -> ExecFuture {
         std_io::ErrorKind::AlreadyExists,
         "connection is already TLS encrypted",
     ));
-    return Box::new(fut);
+    Box::new(fut)
 }
 
 const STARTTLS: &str = "STARTTLS";
@@ -81,6 +81,7 @@ where
         })
     }
 
+    #[allow(clippy::redundant_closure_call)]
     fn exec(self, mut io: Io) -> ExecFuture {
         let StartTls {
             sni_domain,

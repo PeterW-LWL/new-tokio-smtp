@@ -31,7 +31,7 @@ fn main() {
         println!("[start connect_send_quit]");
         Connection::connect_send_quit(config, mails)
             //Stream::for_each is design wise broken in futures v0.1
-            .then(|result| Ok(result))
+            .then(Ok)
             .for_each(|result| {
                 if let Err(err) = result {
                     println!("[sending mail failed]: {}", err);
@@ -81,7 +81,7 @@ fn read_request() -> Request {
 
     // this normally adapts to a higher level abstraction
     // of mail then this crate provides
-    let mail_data = Mail::new(EncodingRequirement::None, raw_mail.to_owned());
+    let mail_data = Mail::new(EncodingRequirement::None, raw_mail);
 
     let mail = MailEnvelop::new(sender, vec1![send_to], mail_data);
 

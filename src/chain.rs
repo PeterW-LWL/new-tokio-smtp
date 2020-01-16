@@ -92,7 +92,7 @@ where
 
     // the index of the current operation in the chain plus 1
     let mut index_p1 = 0;
-    let fut = future::loop_fn(con, move |con| {
+    future::loop_fn(con, move |con| {
         index_p1 += 1;
         if let Some(next_cmd) = chain.pop() {
             //FIXME[rust/co-rotines+self-borrow]: this is likly not needed with self borrow
@@ -121,9 +121,7 @@ where
         } else {
             Either::B(future::ok(Loop::Break((con, Ok(())))))
         }
-    });
-
-    fut
+    })
 }
 
 /// Decide if a error should just stop sending commands or should

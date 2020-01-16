@@ -186,7 +186,7 @@ impl FromStr for EhloParam {
         let valid = inp.bytes().all(|bch| 33 <= bch && bch <= 126);
 
         if valid {
-            Ok(EhloParam(inp.to_owned().into()))
+            Ok(EhloParam(inp.to_owned()))
         } else {
             Err(SyntaxError::Param)
         }
@@ -246,7 +246,7 @@ impl EsmtpValue {
 
         if valid {
             let sfyied: String = val.into();
-            Ok(EsmtpValue(sfyied.into()))
+            Ok(EsmtpValue(sfyied))
         } else {
             Err(SyntaxError::EsmtpKeyword)
         }
@@ -280,7 +280,7 @@ impl FromStr for Domain {
     type Err = SyntaxError;
 
     fn from_str(inp: &str) -> Result<Self, Self::Err> {
-        let valid = inp.split(".").all(validate_subdomain);
+        let valid = inp.split('.').all(validate_subdomain);
 
         if valid {
             Ok(Domain(inp.to_lowercase().into()))

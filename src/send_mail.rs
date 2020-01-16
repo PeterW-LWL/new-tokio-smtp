@@ -490,14 +490,12 @@ impl Connection {
         I: IntoIterator<Item = Result<MailEnvelop, E>>,
         T: SetupTls,
     {
-        let fut = Connection::connect(config)
+        Connection::connect(config)
             .then(|res| match res {
                 Err(err) => Err(E::from(GeneralError::from(err))),
                 Ok(con) => Ok(SendAllMails::new(con, mails).quit_on_completion()),
             })
-            .flatten_stream();
-
-        fut
+            .flatten_stream()
     }
 }
 
@@ -600,6 +598,7 @@ where
     type Error = E;
 
     //FIXME[futures/async streams]
+    #[allow(clippy::unit_arg)]
     fn poll(&mut self) -> Poll<Option<Self::Item>, Self::Error> {
         loop {
             if let Some(mut pending) = self.pending.take() {
@@ -711,7 +710,7 @@ where
 
     fn poll(&mut self) -> Poll<Option<Self::Item>, Self::Error> {
         loop {
-            let is_done = if let &mut CompletionState::Pending(ref mut fut) = &mut self.state {
+            let is_done = if let CompletionState::Pending(ref mut fut) = self.state {
                 if let Ok(Async::NotReady) = fut.poll() {
                     return Ok(Async::NotReady);
                 } else {

@@ -42,7 +42,7 @@ mod Ehlo {
                 Ok(_) => con,
                 Err(e) => panic!("unexpected ehlo failed: {:?}", e),
             })
-            .map_err(|err| -> () { panic!("unexpected error: {:?}", err) });
+            .map_err(|err| panic!("unexpected error: {:?}", err));
 
         let con = fut.wait().unwrap();
         {

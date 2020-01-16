@@ -28,13 +28,11 @@ where
     LE: Send + FnOnce(LogicError) -> ConnectingFailed,
     E: Into<ConnectingFailed>,
 {
-    let fut = match res {
+    match res {
         Err(err) => Either::A(future::err(err.into())),
-        Ok((con, Ok(_resp))) => Either::A(future::ok(con.into())),
+        Ok((con, Ok(_resp))) => Either::A(future::ok(con)),
         Ok((con, Err(err))) => Either::B(con.quit().then(|_| Err(new_logic_err(err)))),
-    };
-
-    fut
+    }
 }
 
 impl Connection {
@@ -64,26 +62,22 @@ impl Connection {
             }
         };
 
-        let fut = con_fut.and_then(|con| {
+        con_fut.and_then(|con| {
             con.send(auth_cmd)
                 .then(|res| cmd_future2connecting_future(res, ConnectingFailed::Auth))
-        });
-
-        fut
+        })
     }
 
     #[doc(hidden)]
     pub fn _connect_insecure_no_ehlo(
         addr: &SocketAddr,
     ) -> impl Future<Item = Connection, Error = ConnectingFailed> + Send {
-        let fut = Io::connect_insecure(addr)
+        Io::connect_insecure(addr)
             .and_then(Io::parse_response)
             .then(|res| {
                 let res = res.map(|(io, res)| (Connection::from(io), res));
                 cmd_future2connecting_future(res, ConnectingFailed::Setup)
-            });
-
-        fut
+            })
     }
 
     #[doc(hidden)]
@@ -94,14 +88,12 @@ impl Connection {
     where
         S: SetupTls,
     {
-        let fut = Io::connect_secure(addr, config)
+        Io::connect_secure(addr, config)
             .and_then(Io::parse_response)
             .then(|res| {
                 let res = res.map(|(io, res)| (Connection::from(io), res));
                 cmd_future2connecting_future(res, ConnectingFailed::Setup)
-            });
-
-        fut
+            })
     }
 
     #[doc(hidden)]
@@ -112,12 +104,10 @@ impl Connection {
         //Note: this has a circular dependency between Connection <-> cmd Ehlo which
         // could be resolved using a ext. trait, but it's more ergonomic this way
         use command::Ehlo;
-        let fut = Connection::_connect_insecure_no_ehlo(addr).and_then(|con| {
+        Connection::_connect_insecure_no_ehlo(addr).and_then(|con| {
             con.send(Ehlo::from(clid))
                 .then(|res| cmd_future2connecting_future(res, ConnectingFailed::Setup))
-        });
-
-        fut
+        })
     }
 
     #[doc(hidden)]
@@ -132,12 +122,10 @@ impl Connection {
         //Note: this has a circular dependency between Connection <-> cmd Ehlo which
         // could be resolved using a ext. trait, but it's more ergonomic this way
         use command::Ehlo;
-        let fut = Connection::_connect_direct_tls_no_ehlo(addr, config).and_then(|con| {
+        Connection::_connect_direct_tls_no_ehlo(addr, config).and_then(|con| {
             con.send(Ehlo::from(clid))
                 .then(|res| cmd_future2connecting_future(res, ConnectingFailed::Setup))
-        });
-
-        fut
+        })
     }
 
     #[doc(hidden)]
@@ -154,7 +142,7 @@ impl Connection {
         use command::{Ehlo, StartTls};
         let TlsConfig { domain, setup } = config;
 
-        let fut = Connection::_connect_insecure(&addr, clid.clone())
+        Connection::_connect_insecure(&addr, clid.clone())
             .and_then(|con| {
                 con.send(StartTls {
                     setup_tls: setup,
@@ -163,9 +151,7 @@ impl Connection {
                 .map_err(ConnectingFailed::Io)
             })
             .ctx_and_then(|con, _| con.send(Ehlo::from(clid)).map_err(ConnectingFailed::Io))
-            .then(|res| cmd_future2connecting_future(res, ConnectingFailed::Setup));
-
-        fut
+            .then(|res| cmd_future2connecting_future(res, ConnectingFailed::Setup))
     }
 }
 
@@ -311,9 +297,7 @@ where
         NA: Cmd,
     {
         let LocalNonSecureBuilder {
-            client_id,
-            port,
-            auth_cmd: _,
+            client_id, port, ..
         } = self;
 
         LocalNonSecureBuilder {
@@ -331,7 +315,7 @@ where
             auth_cmd,
         } = self;
 
-        let client_id = client_id.unwrap_or_else(|| ClientId::hostname());
+        let client_id = client_id.unwrap_or_else(ClientId::hostname);
 
         let addr = SocketAddr::new(Ipv4Addr::new(127, 0, 0, 1).into(), port);
 
@@ -437,8 +421,8 @@ where
             domain,
             use_security,
             client_id,
-            setup_tls: _,
             auth_cmd,
+            ..
         } = self;
 
         ConnectionBuilder {
@@ -487,7 +471,7 @@ where
             use_security,
             client_id,
             setup_tls,
-            auth_cmd: _,
+            ..
         } = self;
 
         ConnectionBuilder {
@@ -496,7 +480,7 @@ where
             use_security,
             client_id,
             setup_tls,
-            auth_cmd: auth_cmd,
+            auth_cmd,
         }
     }
 
@@ -533,7 +517,7 @@ where
             UseSecurity::DirectTls => Security::DirectTls(tls_config),
         };
 
-        let client_id = client_id.unwrap_or_else(|| ClientId::hostname());
+        let client_id = client_id.unwrap_or_else(ClientId::hostname);
 
         ConnectionConfig {
             addr,

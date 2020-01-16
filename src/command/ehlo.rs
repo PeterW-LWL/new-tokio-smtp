@@ -76,11 +76,11 @@ fn parse_ehlo_response(response: &Response) -> Result<EhloData, SyntaxError> {
     let lines = response.msg();
     let first = lines.first().expect("response with 0 lines should not");
     //UNWRAP_SAFE: Split has at last one entry
-    let domain: Domain = first.split(" ").next().unwrap().parse()?;
+    let domain: Domain = first.split(' ').next().unwrap().parse()?;
     let mut caps = HashMap::new();
 
     for line in lines[1..].iter() {
-        let mut parts = line.split(" ");
+        let mut parts = line.split(' ');
         //UNWRAP_SAFE: Split has at last one entry
         let capability = parts.next().unwrap().parse()?;
         let params = parts

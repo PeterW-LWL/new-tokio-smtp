@@ -12,12 +12,11 @@ use common::{map_tls_err, SetupTls, TlsConfig};
 impl Io {
     /// create a new Tcp only connection to the given address
     pub fn connect_insecure(addr: &SocketAddr) -> Map<ConnectFuture, fn(TcpStream) -> Io> {
-        let fut = TcpStream::connect(addr).map(Io::from as fn(TcpStream) -> Io);
-
-        fut
+        TcpStream::connect(addr).map(Io::from as fn(TcpStream) -> Io)
     }
 
     /// create a new Tcp-Tls connection to the given address using the given tls config
+    #[allow(clippy::redundant_closure_call)]
     pub fn connect_secure<S>(
         addr: &SocketAddr,
         config: TlsConfig<S>,

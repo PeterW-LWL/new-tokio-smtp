@@ -48,6 +48,13 @@ impl ActionData {
         }
     }
 
+    pub fn is_empty(&self) -> bool {
+        match *self {
+            ActionData::Blob(ref blob) => blob.is_empty(),
+            ActionData::Lines(ref lines) => lines.iter().all(|line| line.is_empty()),
+        }
+    }
+
     pub fn assert_same_start(&self, other: &[u8]) {
         match *self {
             ActionData::Blob(ref blob) => {
@@ -351,6 +358,7 @@ impl Write for MockSocket {
         Ok(try_ready_or_would_block!(self.poll_write(buf)))
     }
 
+    #[allow(clippy::unit_arg)]
     fn flush(&mut self) -> Result<(), std_io::Error> {
         Ok(try_ready_or_would_block!(self.poll_flush()))
     }
@@ -576,9 +584,9 @@ impl AsyncWrite for MockSocket {
     fn shutdown(&mut self) -> Poll<(), std_io::Error> {
         // shutdown implies flush, so we flush
         try_ready!(self.poll_flush());
-        match &self.state {
-            &State::ShutdownOrPoison => (),
-            &State::NeedNewAction { .. } => (),
+        match self.state {
+            State::ShutdownOrPoison => (),
+            State::NeedNewAction { .. } => (),
             _ => panic!("unexpected state when shutting down"),
         }
         self.state = State::ShutdownOrPoison;
@@ -710,9 +718,8 @@ mod test {
         where
             FN: panic::UnwindSafe + FnOnce(),
         {
-            match panic::catch_unwind(func) {
-                Ok(_) => panic!("closure should have paniced"),
-                Err(_) => (),
+            if panic::catch_unwind(func).is_ok() {
+                panic!("closure should have paniced");
             }
         }
 
@@ -824,6 +831,7 @@ mod test {
             }
         }
 
+        #[allow(clippy::string_lit_as_bytes)]
         #[test]
         fn with_simple_session() {
             use self::ActionData::*;

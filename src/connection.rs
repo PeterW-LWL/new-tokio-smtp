@@ -110,7 +110,7 @@ impl Connection {
         self,
         cmd: C,
     ) -> impl Future<Item = (Connection, SmtpResult), Error = std_io::Error> {
-        let fut = if let Err(err) = cmd.check_cmd_availability(self.io.ehlo_data()) {
+        if let Err(err) = cmd.check_cmd_availability(self.io.ehlo_data()) {
             Either::B(future::ok((
                 self,
                 Err(LogicError::MissingCapabilities(err)),
@@ -120,9 +120,7 @@ impl Connection {
                 cmd.exec(self.into())
                     .map(|(io, smtp_res)| (Connection::from(io), smtp_res)),
             )
-        };
-
-        fut
+        }
     }
 
     /// returns true if the capability is known to be supported, false else wise

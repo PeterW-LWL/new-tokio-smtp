@@ -197,6 +197,7 @@ pub struct Buffers {
     pub output: BytesMut,
 }
 
+#[allow(clippy::new_without_default)]
 impl Buffers {
     /// create new empty buffers
     pub fn new() -> Self {
