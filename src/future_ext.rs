@@ -1,5 +1,5 @@
 //! provieds an extension trait for futures of the form `Future<(Ctx, Result<Item, Err>), Err2>`
-use futures::{Async, Future, IntoFuture, Poll};
+use futures::{Async, Future, IntoFuture, Poll, try_ready};
 
 /// A helper trait implemented on Futures
 ///

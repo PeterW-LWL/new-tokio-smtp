@@ -27,9 +27,6 @@
 //! can be provided too if needed for testing
 #![warn(rust_2018_idioms)]
 
-#[macro_use]
-extern crate futures;
-
 // order of modules is also "order" in dependency-tree
 // i.e. module should only import from modules hither
 // up in the list

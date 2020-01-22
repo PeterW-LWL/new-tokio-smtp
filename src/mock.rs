@@ -10,7 +10,7 @@ use rand::{random, thread_rng, Rng};
 use bytes::{BufMut, BytesMut};
 use futures::sync::mpsc;
 use futures::task::{self, Task};
-use futures::{future, Async, Future, Poll, Stream};
+use futures::{future, Async, Future, Poll, Stream, try_ready};
 use tokio::io::{AsyncRead, AsyncWrite};
 
 use crate::io::MockStream;

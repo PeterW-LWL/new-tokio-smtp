@@ -92,7 +92,7 @@ use std::mem::replace;
 use bytes::Bytes;
 use futures::future::{self, Either, Future};
 use futures::stream::Stream;
-use futures::{Async, IntoFuture, Poll};
+use futures::{Async, IntoFuture, Poll, try_ready};
 use vec1::Vec1;
 
 use crate::chain::{chain, HandleErrorInChain, OnError};

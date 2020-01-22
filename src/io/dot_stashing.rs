@@ -2,7 +2,7 @@ use std::io as std_io;
 
 use bytes::buf::{Buf, BufMut};
 use futures::stream::Stream;
-use futures::{Async, Future, Poll};
+use futures::{Async, Future, Poll, try_ready};
 
 use super::{Io, OUTPUT_BUFFER_INC_SIZE};
 
